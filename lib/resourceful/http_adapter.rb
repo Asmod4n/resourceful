@@ -6,7 +6,7 @@ require 'addressable/uri'
 module Resourceful
 
   class HttpAdapter
-    # Make an HTTP request using the standard library net/http.
+    # Make an HTTP request using the HTTP library
     #
     # Will use a proxy defined in the http_proxy environment variable, if set.
     #
