@@ -77,6 +77,7 @@ module Resourceful
     def skip_cache?
       return true unless method.in? CACHEABLE_METHODS
       header.cache_control && header.cache_control.include?('no-cache')
+      header.cache_control && header.cache_control.include?('max-age=0')
     end
 
     # The cached response
