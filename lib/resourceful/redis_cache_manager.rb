@@ -3,7 +3,11 @@ require 'redis'
 require 'time'
 
 module Resourceful
+  # Stores cache entries in Redis. Similarly to the
+  # InMemoryCacheManager there are no limits on storage, so this will eventually
+  # eat up all your Memory unless you run Redis with maxmemory!
   class RedisCacheManager < AbstractCacheManager
+
     def initialize
       @redis = Redis.new
     end
@@ -20,7 +24,7 @@ module Resourceful
       entries = cache_entries_for(request)
       entries[request] = response
 
-      @redis.set(uri_hash(request.uri), Marshal.dump(entries), ex: expires(response.header))
+      @redis.set(uri_hash(request.uri), Marshal.dump(entries))
     end
 
     def invalidate(uri)
@@ -28,16 +32,6 @@ module Resourceful
     end
 
     private
-    def expires(header)
-      if header.cache_control and m_age_str = header.cache_control.find{|cc| /^max-age=/ === cc}
-        m_age_str[/\d+/].to_i
-      elsif header.expires
-        Time.httpdate(header.expires).to_i - Time.httpdate(header.date).to_i
-      else
-        nil
-      end
-    end
-
     def cache_entries_for(request)
       if entries = @redis.get(uri_hash(request.uri))
         Marshal.load(entries)
