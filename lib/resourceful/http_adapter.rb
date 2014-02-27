@@ -19,12 +19,13 @@ module Resourceful
       options[:socket_class]     = Celluloid::IO::TCPSocket
       options[:ssl_socket_class] = Celluloid::IO::SSLSocket
 
-      options[:body]    = body
-      options[:headers] = header
-      options[:proxy]   = proxy if proxy = proxy_details
+      options[:body]     = body
+      options[:headers]  = header
+      options[:proxy]    = proxy if proxy = proxy_details
+      options[:response] = :object
 
       client   = HTTP::Client.new(options)
-      response = client.request(method, uri).response
+      response = client.request(method, uri)
 
       [ response.code,
         Resourceful::Header.new(response.headers),
