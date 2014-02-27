@@ -54,8 +54,6 @@ module Resourceful
         @cacheable = true  if header.cache_control && header.cache_control.include?('public')
         @cacheable = true  if header.cache_control && header.cache_control.include?('private')
         @cacheable = false if header.expires && header.expires.to_i < 0
-        @cacheable = false if header.cache_control && header.cache_control.include?('max-age=0')
-
         @cacheable || false
       end
     end
